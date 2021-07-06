@@ -21,10 +21,6 @@ const Schema = mongoose.Schema({
         type:[mongoose.Schema.ObjectId],
         required: true
     },
-    time:{
-        type: Date,
-        required: true
-    },
     creatorid:{
         type: mongoose.Schema.ObjectId,
         required: true
@@ -33,7 +29,9 @@ const Schema = mongoose.Schema({
         type:String,
         required: true
     }
+},{
+    timestamps: true
 })
 
-const Question = mongoose.model('User', Schema)
+const Question = mongoose.model('Question', Schema)
 module.exports = Question

@@ -19,7 +19,7 @@ db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to database'))
 
 const User = require('./model/User');
-const moment = require('moment');
+const Question = require('./model/Question');
 
 //middleware
 const authenticateJWT = (req, res, next) => {
@@ -80,15 +80,20 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/question', authenticateJWT, async (req, res) => {
+    const { user } = req.user;
     const questionData = req.body;
-    const questionBody = {
+    const questionBody = new Question({
         ...questionData,
-        creatorName: req.user.name,
-        creatorid: req.user._id,
-        time: new Date.now(),
-    }
-} )
+        creatorName: user.name,
+        creatorid: user._id,
+    })
+    questionBody.save()
+    res.send(questionBody)
 
+})
 
+app.put('/question', authenticateJWT, async (req, res) => {
+    const { user } = req.user
+})
 
 app.listen(3001, () => console.log('Server started on 3000'))
