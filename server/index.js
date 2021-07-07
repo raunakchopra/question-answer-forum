@@ -45,10 +45,9 @@ const authenticateJWT = (req, res, next) => {
 
 app.post('/signup', async (req, res) => {
     const user  = req.body;
-
+    console.log(req.body)
     if(user) {
-        const userDetails = await User.find({ uid: user.uid  });
-        console.log(userDetails)
+        const userDetails = await User.find({ email: user.email  });
         if(userDetails.length === 0){
             const UserData = new User({...user})
             UserData.save()
@@ -92,8 +91,37 @@ app.post('/question', authenticateJWT, async (req, res) => {
 
 })
 
-app.put('/question', authenticateJWT, async (req, res) => {
+app.post('/question/:id/delete', authenticateJWT, async (req, res) => {
     const { user } = req.user
+    const { id } = req.params
+
+    console.log(updatedQuestion)
+
+    const deletedData = await Question.deleteOne({_id: id, creatorid: user._id})
+    if(deletedData){
+        res.json(updateData)
+    }
+    else{
+        res.send('Some Problem')
+    }
 })
+
+app.put('/question/:id', authenticateJWT, async (req, res) => {
+    const { user } = req.user
+    const { id } = req.params
+    const updatedQuestion = req.body;
+
+    console.log(updatedQuestion)
+
+    const updateData = await Question.updateOne({_id: id, creatorid: user._id}, updatedQuestion)
+    if(updateData){
+        res.json(updateData)
+    }
+    else{
+        res.send('Some Problem')
+    }
+})
+
+
 
 app.listen(3001, () => console.log('Server started on 3000'))
